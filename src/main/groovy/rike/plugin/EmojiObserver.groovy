@@ -26,6 +26,7 @@ import nextflow.trace.TraceRecord
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 /**
  * Implements an observer that allows implementing custom
  * logic on nextflow execution events.
@@ -41,6 +42,7 @@ class EmojiObserver implements TraceObserver {
         'ocean'  : [filled: '🌊', empty: '⬜', completed: '🐟', cached: '🐚', failed: '🦈', summary: '🏖️', error: '🌀'],
         'lab'    : [filled: '🧪', empty: '⬜', completed: '🔬', cached: '📋', failed: '☣️', summary: '🧬', error: '⚠️'],
         'food'   : [filled: '🍕', empty: '⬜', completed: '🍰', cached: '🥫', failed: '🔥', summary: '🍽️', error: '🤮'],
+        'pirate' : [filled: '🏴‍☠️', empty: '🏳️', completed: '💰', cached: '🗺️', failed: '🦜', summary: '⚓', error: '☠️'],
     ] as Map<String, Map<String, String>>
 
     // Active theme
@@ -90,7 +92,6 @@ class EmojiObserver implements TraceObserver {
         showProgressBar = session.config.navigate('emoji.progressBar', true) as boolean
         showGreeting = session.config.navigate('emoji.greeting', true) as boolean
         showSummary = session.config.navigate('emoji.summary', true) as boolean
-
         if (showGreeting) {
             System.err.println("\n" + getSeasonalGreeting() + "\n")
         }
@@ -167,6 +168,18 @@ class EmojiObserver implements TraceObserver {
         System.err.flush()
     }
 
+    // Festive events: [month, day, emoji, name]
+    static final List<List<Object>> FESTIVE_DAYS = [
+        [1,  1,  '🍀', 'New Year\'s Day'],
+        [2,  14, '💕', 'Valentine\'s Day'],
+        [3,  14, '🥧', 'Pi Day'],
+        [4,  22, '🌍', 'Earth Day'],
+        [4,  25, '🧬', 'DNA Day'],
+        [10, 31, '🎃', 'Halloween'],
+        [12, 25, '🎅', 'Christmas'],
+        [12, 31, '🎆', 'New Year\'s Eve'],
+    ] as List<List<Object>>
+
     private String getSeasonalGreeting() {
         LocalDate today = LocalDate.now()
         int month = today.monthValue
@@ -182,11 +195,46 @@ class EmojiObserver implements TraceObserver {
         if (month == 12 && (day == 24 || day == 25)) return "🎅 Santa is delivering your results! 🎅"
         if (month == 12 && day == 31) return "🎆 Last pipeline of the year! 🎆"
 
-        // Seasons
-        if (month >= 3 && month <= 5) return "🌱 Workflows are sprouting! 🌱"
-        if (month >= 6 && month <= 8) return "☀️ Peak compute season! ☀️"
-        if (month >= 9 && month <= 11) return "🍂 Crunching leaves and data! 🍂"
-        return "❄️ Freezing temps, blazing pipelines! ❄️"
+        // Seasonal greeting + countdown to next festive day
+        String seasonal
+        if (month >= 3 && month <= 5) seasonal = "🌱 Workflows are sprouting! 🌱"
+        else if (month >= 6 && month <= 8) seasonal = "☀️ Peak compute season! ☀️"
+        else if (month >= 9 && month <= 11) seasonal = "🍂 Crunching leaves and data! 🍂"
+        else seasonal = "❄️ Freezing temps, blazing pipelines! ❄️"
+
+        String countdown = getCountdown(today)
+        return countdown != null ? "${seasonal}\n${countdown}" : seasonal
+    }
+
+    private String getCountdown(LocalDate today) {
+        int year = today.year
+        long minDays = Long.MAX_VALUE
+        String nextEmoji = null
+        String nextName = null
+
+        for (List<Object> event : FESTIVE_DAYS) {
+            int m = event.get(0) as int
+            int d = event.get(1) as int
+            String emoji = event.get(2) as String
+            String name = event.get(3) as String
+
+            LocalDate eventDate = LocalDate.of(year, m, d)
+            if (!eventDate.isAfter(today)) {
+                // Try next year
+                eventDate = LocalDate.of(year + 1, m, d)
+            }
+            long days = ChronoUnit.DAYS.between(today, eventDate)
+            if (days > 0 && days < minDays) {
+                minDays = days
+                nextEmoji = emoji
+                nextName = name
+            }
+        }
+
+        if (nextEmoji != null) {
+            return "${nextEmoji} ${minDays} day${minDays == 1L ? '' : 's'} until ${nextName}!"
+        }
+        return null
     }
 
 }

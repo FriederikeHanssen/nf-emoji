@@ -1,39 +1,52 @@
 # nf-emoji
 
-A whimsical Nextflow plugin that adds emoji flair to your pipeline runs.
+## Summary
 
-## Features
+A whimsical Nextflow plugin that adds emoji flair to your pipeline runs. Get seasonal greetings, themed progress tracking, completion summaries, and emoji-decorated channel operators - all without changing your pipeline code.
 
-### Seasonal Greetings
+## Get Started
 
-Automatically prints a seasonal or holiday greeting when your pipeline starts:
+Add the plugin to your `nextflow.config`:
+
+```groovy
+plugins {
+    id 'nf-emoji@0.1.0'
+}
+```
+
+That's it! Your pipeline will now show seasonal greetings and a completion summary with emoji.
+
+To customize, add an `emoji` block to your config:
+
+```groovy
+emoji {
+    theme       = 'ocean'    // default, space, ocean, lab, food
+    progressBar = true       // show live progress bar
+    greeting    = true       // show seasonal greeting
+    summary     = true       // show completion summary
+}
+```
+
+## Examples
+
+### Automatic pipeline decoration
+
+Just enable the plugin and your pipeline output gets emoji flair:
 
 ```
 ❄️ Freezing temps, blazing pipelines! ❄️
-```
 
-Special greetings on Pi Day (Mar 14), DNA Day (Apr 25), Halloween (Oct 31), Christmas, and more.
+executor >  local (6)
+[0b/56a76c] process > SAY_HELLO (3)     [100%] 3 of 3 ✔
+[72/b1b2ee] process > COUNT_LETTERS (2) [100%] 3 of 3 ✔
 
-### Pipeline Summary
-
-Prints a themed summary when your pipeline completes:
-
-```
 🏖️ Pipeline complete!
 🐟 6 succeeded | 🦈 0 failed | 🐚 0 cached
 ```
 
-### Progress Bar
-
-A live emoji progress bar that updates as tasks complete:
-
-```
-🌊🌊🌊🌊🌊🌊⬜⬜⬜⬜ 60% (3/5)
-```
-
 ### Themes
 
-Five built-in themes that change all emojis throughout the plugin:
+Five built-in themes change all emojis throughout the plugin:
 
 | Theme | Succeeded | Failed | Cached | Progress |
 |---------|-----------|--------|--------|----------|
@@ -43,7 +56,7 @@ Five built-in themes that change all emojis throughout the plugin:
 | lab | 🔬 | ☣️ | 📋 | 🧪 |
 | food | 🍰 | 🔥 | 🥫 | 🍕 |
 
-### Channel Operators
+### Channel operators
 
 **`emojiView`** - like `view()` but with an emoji prefix:
 
@@ -66,19 +79,16 @@ channel.of(1, 2, 3).emojiDump(tag: 'counts', emoji: '🔢')
 // [🔢 counts] 3
 ```
 
-## Configuration
+### Seasonal greetings
 
-Add to your `nextflow.config`:
+The plugin detects the date and prints themed greetings:
 
-```groovy
-plugins {
-    id 'nf-emoji@0.1.0'
-}
+- Mar 14: `🥧 3.14159... Pipeline is irrational! 🥧`
+- Apr 25: `🧬 Happy DNA Day! Time to sequence some tasks! 🧬`
+- Oct 31: `🎃 Something wicked this way computes! 🎃`
+- Dec 24-25: `🎅 Santa is delivering your results! 🎅`
+- Plus seasonal defaults for spring, summer, fall, and winter
 
-emoji {
-    theme       = 'ocean'    // default, space, ocean, lab, food
-    progressBar = true       // show live progress bar
-    greeting    = true       // show seasonal greeting
-    summary     = true       // show completion summary
-}
-```
+## License
+
+Copyright 2025, Friederike Hanssen. Licensed under the Apache License, Version 2.0.

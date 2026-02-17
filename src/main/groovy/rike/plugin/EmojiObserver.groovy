@@ -48,10 +48,11 @@ class EmojiObserver implements TraceObserver {
     // Active theme
     Map<String, String> theme = THEMES.get('default')
 
-    // Feature toggles (all on by default)
+    // Feature toggles (all on by default, confetti off by default)
     boolean showProgressBar = true
     boolean showGreeting = true
     boolean showSummary = true
+    boolean showConfetti = false
 
     // Track per-process counts
     ConcurrentHashMap<String, AtomicInteger> completed = new ConcurrentHashMap<>()
@@ -92,6 +93,8 @@ class EmojiObserver implements TraceObserver {
         showProgressBar = session.config.navigate('emoji.progressBar', true) as boolean
         showGreeting = session.config.navigate('emoji.greeting', true) as boolean
         showSummary = session.config.navigate('emoji.summary', true) as boolean
+        showConfetti = session.config.navigate('emoji.confetti', false) as boolean
+
         if (showGreeting) {
             System.err.println("\n" + getSeasonalGreeting() + "\n")
         }
@@ -119,7 +122,27 @@ class EmojiObserver implements TraceObserver {
 
                 System.err.println "\n${theme.get('summary')} Pipeline complete!"
                 System.err.println "${theme.get('completed')} ${totalCompleted} succeeded | ${theme.get('failed')} ${totalFailed} failed | ${theme.get('cached')} ${totalCached} cached"
+
+                if (showConfetti && totalFailed == 0) {
+                    launchConfetti()
+                }
             }))
+        }
+    }
+
+    private void launchConfetti() {
+        try {
+            // Check if cli-confetti is available
+            Process which = new ProcessBuilder('which', 'cli-confetti').start()
+            if (which.waitFor() != 0) return
+
+            // Launch cli-confetti, inheriting the terminal
+            ProcessBuilder pb = new ProcessBuilder('cli-confetti', '-d', '3')
+            pb.inheritIO()
+            Process p = pb.start()
+            p.waitFor()
+        } catch (Exception e) {
+            // cli-confetti not found or failed, silently skip
         }
     }
 

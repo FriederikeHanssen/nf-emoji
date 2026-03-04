@@ -145,12 +145,12 @@ class EmojiObserver implements TraceObserver {
                 for (AtomicInteger v : cached.values()) totalCached += v.get()
                 for (AtomicInteger v : failed.values()) totalFailed += v.get()
 
-                System.err.println "\n${theme.get('summary')} Pipeline complete!"
-                System.err.println "${theme.get('completed')} ${totalCompleted} succeeded | ${theme.get('failed')} ${totalFailed} failed | ${theme.get('cached')} ${totalCached} cached"
-
                 if (showConfetti && totalFailed == 0) {
                     launchConfetti()
                 }
+
+                System.err.println "\n${theme.get('summary')} Pipeline complete!"
+                System.err.println "${theme.get('completed')} ${totalCompleted} succeeded | ${theme.get('failed')} ${totalFailed} failed | ${theme.get('cached')} ${totalCached} cached"
             }))
         }
     }

@@ -44,6 +44,7 @@ class EmojiObserver implements TraceObserver {
         'food'   : [filled: '🍕', empty: '⬜', completed: '🍰', cached: '🥫', failed: '🔥', summary: '🍽️', error: '🤮'],
         'pirate' : [filled: '🏴‍☠️', empty: '🏳️', completed: '💰', cached: '🗺️', failed: '🦜', summary: '⚓', error: '☠️'],
         'animal' : [filled: '🐎', empty: '⬜', completed: '🦊', cached: '🐢', failed: '🦂', summary: '🦁', error: '🐛'],
+        'nfcore' : [filled: '🍏', empty: '⬜', completed: '🍏', cached: '🌿', failed: '🍎', summary: '🌳', error: '🍎'],
     ] as Map<String, Map<String, String>>
 
     // Active theme
@@ -54,6 +55,9 @@ class EmojiObserver implements TraceObserver {
     boolean showGreeting = true
     boolean showSummary = true
     boolean showConfetti = false
+
+    // Custom greeting message (null = use seasonal greeting)
+    String customGreeting = null
 
     // Track per-process counts
     ConcurrentHashMap<String, AtomicInteger> completed = new ConcurrentHashMap<>()
@@ -85,6 +89,10 @@ class EmojiObserver implements TraceObserver {
     void onFlowCreate(Session session) {
         // Read theme from nextflow.config: emoji { theme = 'space' }
         String themeName = session.config.navigate('emoji.theme', 'default') as String
+        if (themeName == 'random') {
+            List<String> themeNames = THEMES.keySet().toList()
+            themeName = themeNames.get(new Random().nextInt(themeNames.size()))
+        }
         if (THEMES.containsKey(themeName)) {
             theme = THEMES.get(themeName)
         } else {
@@ -92,12 +100,21 @@ class EmojiObserver implements TraceObserver {
         }
         // Read feature toggles
         showProgressBar = session.config.navigate('emoji.progressBar', true) as boolean
-        showGreeting = session.config.navigate('emoji.greeting', true) as boolean
         showSummary = session.config.navigate('emoji.summary', true) as boolean
         showConfetti = session.config.navigate('emoji.confetti', false) as boolean
 
+        // Greeting: true/false for seasonal, or a custom string
+        Object greetingConfig = session.config.navigate('emoji.greeting', true)
+        if (greetingConfig instanceof String) {
+            showGreeting = true
+            customGreeting = greetingConfig as String
+        } else {
+            showGreeting = greetingConfig as boolean
+        }
+
         if (showGreeting) {
-            System.err.println("\n" + getSeasonalGreeting() + "\n")
+            String greeting = customGreeting ?: getSeasonalGreeting()
+            System.err.println("\n" + greeting + "\n")
         }
     }
 

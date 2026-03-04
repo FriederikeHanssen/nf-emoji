@@ -104,7 +104,7 @@ class EmojiObserverTest extends Specification {
 
     def 'should have all expected themes'() {
         expect:
-        EmojiObserver.THEMES.keySet() == ['default', 'space', 'ocean', 'lab', 'food', 'pirate', 'animal'] as Set
+        EmojiObserver.THEMES.keySet() == ['default', 'space', 'ocean', 'lab', 'food', 'pirate', 'animal', 'nfcore'] as Set
     }
 
     def 'each theme should have all required keys'() {
@@ -130,7 +130,63 @@ class EmojiObserverTest extends Specification {
         observer.theme == EmojiObserver.THEMES.get(themeName)
 
         where:
-        themeName << ['default', 'space', 'ocean', 'lab', 'food', 'pirate', 'animal']
+        themeName << ['default', 'space', 'ocean', 'lab', 'food', 'pirate', 'animal', 'nfcore']
+    }
+
+    def 'should pick a valid theme when random is selected'() {
+        given:
+        def observer = new EmojiObserver()
+        def session = Mock(Session)
+        session.config >> [emoji: [theme: 'random', greeting: false]]
+
+        when:
+        observer.onFlowCreate(session)
+
+        then:
+        EmojiObserver.THEMES.values().contains(observer.theme)
+    }
+
+    // --- Custom greeting ---
+
+    def 'should use custom greeting when greeting is a string'() {
+        given:
+        def observer = new EmojiObserver()
+        def session = Mock(Session)
+        session.config >> [emoji: [greeting: 'Hello from the lab!']]
+
+        when:
+        observer.onFlowCreate(session)
+
+        then:
+        observer.showGreeting == true
+        observer.customGreeting == 'Hello from the lab!'
+    }
+
+    def 'should use seasonal greeting when greeting is true'() {
+        given:
+        def observer = new EmojiObserver()
+        def session = Mock(Session)
+        session.config >> [emoji: [greeting: true]]
+
+        when:
+        observer.onFlowCreate(session)
+
+        then:
+        observer.showGreeting == true
+        observer.customGreeting == null
+    }
+
+    def 'should disable greeting when greeting is false'() {
+        given:
+        def observer = new EmojiObserver()
+        def session = Mock(Session)
+        session.config >> [emoji: [greeting: false]]
+
+        when:
+        observer.onFlowCreate(session)
+
+        then:
+        observer.showGreeting == false
     }
 
     // --- Process tracking ---

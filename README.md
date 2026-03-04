@@ -20,10 +20,11 @@ To customize, add an `emoji` block to your config:
 
 ```groovy
 emoji {
-    theme       = 'ocean'    // default, space, ocean, lab, food, pirate, animal
-    progressBar = true       // show live progress bar
-    greeting    = true       // show seasonal greeting
-    summary     = true       // show completion summary
+    theme       = 'ocean'              // default, space, ocean, lab, food, pirate, animal, nfcore, random
+    progressBar = true                 // show live progress bar
+    greeting    = true                 // true/false, or a custom string
+    summary     = true                 // show completion summary
+    confetti    = false                // launch confetti on success (requires cli-confetti)
 }
 ```
 
@@ -46,7 +47,7 @@ executor >  local (6)
 
 ### Themes
 
-Seven built-in themes change all emojis throughout the plugin:
+Eight built-in themes change all emojis throughout the plugin (or use `random` for a surprise):
 
 | Theme | Succeeded | Failed | Cached | Progress |
 |---------|-----------|--------|--------|----------|
@@ -57,6 +58,7 @@ Seven built-in themes change all emojis throughout the plugin:
 | food | 🍰 | 🔥 | 🥫 | 🍕 |
 | pirate | 💰 | 🦜 | 🗺️ | 🏴‍☠️ |
 | animal | 🦊 | 🦂 | 🐢 | 🐎 |
+| nfcore | 🍏 | 🍎 | 🌿 | 🍏 |
 
 ### Channel operators
 
@@ -79,6 +81,16 @@ channel.of(1, 2, 3).emojiDump(tag: 'counts', emoji: '🔢')
 // [🔢 counts] 1
 // [🔢 counts] 2
 // [🔢 counts] 3
+```
+
+### Custom greeting
+
+Set `greeting` to a string to use your own message instead of the seasonal default:
+
+```groovy
+emoji {
+    greeting = '🧪 Welcome to the variant calling pipeline!'
+}
 ```
 
 ### Seasonal greetings

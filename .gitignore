@@ -1,8 +1,24 @@
-# Ignore Gradle project-specific cache directory
+# Gradle
 .gradle
-.idea
-.nextflow*
-
-# Ignore Gradle build output directory
 build
+
+# IDE
+.idea
+*.swp
+*.tmp
+*.bak
+
+# Nextflow
+.nextflow*
 work
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env*
+.envrc
+
+# Example workflow (local dev only)
+workflow/*

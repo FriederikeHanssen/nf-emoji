@@ -20,10 +20,11 @@ To customize, add an `emoji` block to your config:
 
 ```groovy
 emoji {
-    theme       = 'ocean'    // default, space, ocean, lab, food, pirate
-    progressBar = true       // show live progress bar
-    greeting    = true       // show seasonal greeting
-    summary     = true       // show completion summary
+    theme       = 'ocean'              // default, space, ocean, lab, food, pirate, animal, nf-core, seasonal
+    progressBar = true                 // show live progress bar
+    greeting    = true                 // true/false, or a custom string
+    summary     = true                 // show completion summary
+    confetti    = false                // launch confetti on success (requires cli-confetti)
 }
 ```
 
@@ -46,7 +47,7 @@ executor >  local (6)
 
 ### Themes
 
-Six built-in themes change all emojis throughout the plugin:
+Twelve built-in themes (or use `seasonal` to auto-select by time of year):
 
 | Theme | Succeeded | Failed | Cached | Progress |
 |---------|-----------|--------|--------|----------|
@@ -56,6 +57,12 @@ Six built-in themes change all emojis throughout the plugin:
 | lab | 🔬 | ☣️ | 📋 | 🧪 |
 | food | 🍰 | 🔥 | 🥫 | 🍕 |
 | pirate | 💰 | 🦜 | 🗺️ | 🏴‍☠️ |
+| animal | 🦊 | 🦂 | 🐢 | 🐎 |
+| nf-core | 🍏 | 🍎 | 🌿 | 🍏 |
+| spring | 🌸 | 🥀 | 🌱 | 🌷 |
+| summer | 🏖️ | 🌪️ | 🧊 | ☀️ |
+| fall | 🎃 | 💨 | 🍄 | 🍂 |
+| winter | ⛄ | 🥶 | 🧣 | ❄️ |
 
 ### Channel operators
 
@@ -80,15 +87,29 @@ channel.of(1, 2, 3).emojiDump(tag: 'counts', emoji: '🔢')
 // [🔢 counts] 3
 ```
 
+### Custom greeting
+
+Set `greeting` to a string to use your own message instead of the seasonal default:
+
+```groovy
+emoji {
+    greeting = '🧪 Welcome to the variant calling pipeline!'
+}
+```
+
 ### Seasonal greetings
 
 The plugin detects the date and prints themed greetings:
 
-- Mar 14: `🥧 3.14159... Pipeline is irrational! 🥧`
-- Apr 25: `🧬 Happy DNA Day! Time to sequence some tasks! 🧬`
+- Jan 1: `🍀 Happy New Year! 🍀`
+- Feb 14: `💕 Love is in the air...! 💕`
+- Mar 14: `🥧 Happy Pi Day! 🥧`
+- Apr 22: `🌍 Happy Earth Day! 🌍`
+- Apr 25: `🧬 Happy DNA Day! 🧬`
 - Oct 31: `🎃 Something wicked this way computes! 🎃`
-- Dec 24-25: `🎅 Santa is delivering your results! 🎅`
-- Plus seasonal defaults for spring, summer, fall, and winter
+- Dec 24-25: `🎅 'Twas the night before deployment... 🎅`
+- Dec 31: `🎆 Happy New Year! 🎆`
+- Plus seasonal defaults and a countdown to the next festive day
 
 ## License
 

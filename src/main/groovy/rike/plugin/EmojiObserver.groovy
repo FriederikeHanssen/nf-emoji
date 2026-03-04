@@ -43,6 +43,12 @@ class EmojiObserver implements TraceObserver {
         'lab'    : [filled: '🧪', empty: '⬜', completed: '🔬', cached: '📋', failed: '☣️', summary: '🧬', error: '⚠️'],
         'food'   : [filled: '🍕', empty: '⬜', completed: '🍰', cached: '🥫', failed: '🔥', summary: '🍽️', error: '🤮'],
         'pirate' : [filled: '🏴‍☠️', empty: '🏳️', completed: '💰', cached: '🗺️', failed: '🦜', summary: '⚓', error: '☠️'],
+        'animal' : [filled: '🐎', empty: '⬜', completed: '🦊', cached: '🐢', failed: '🦂', summary: '🦁', error: '🐛'],
+        'nf-core': [filled: '🍏', empty: '⬜', completed: '🍏', cached: '🌿', failed: '🍎', summary: '🌳', error: '🍎'],
+        'spring' : [filled: '🌷', empty: '⬜', completed: '🌸', cached: '🌱', failed: '🥀', summary: '🌻', error: '🌧️'],
+        'summer' : [filled: '☀️', empty: '⬜', completed: '🏖️', cached: '🧊', failed: '🌪️', summary: '🌴', error: '⛈️'],
+        'fall'   : [filled: '🍂', empty: '⬜', completed: '🎃', cached: '🍄', failed: '💨', summary: '🍁', error: '🌫️'],
+        'winter' : [filled: '❄️', empty: '⬜', completed: '⛄', cached: '🧣', failed: '🥶', summary: '🎄', error: '🌨️'],
     ] as Map<String, Map<String, String>>
 
     // Active theme
@@ -53,6 +59,9 @@ class EmojiObserver implements TraceObserver {
     boolean showGreeting = true
     boolean showSummary = true
     boolean showConfetti = false
+
+    // Custom greeting message (null = use seasonal greeting)
+    String customGreeting = null
 
     // Track per-process counts
     ConcurrentHashMap<String, AtomicInteger> completed = new ConcurrentHashMap<>()
@@ -84,6 +93,13 @@ class EmojiObserver implements TraceObserver {
     void onFlowCreate(Session session) {
         // Read theme from nextflow.config: emoji { theme = 'space' }
         String themeName = session.config.navigate('emoji.theme', 'default') as String
+        if (themeName == 'seasonal') {
+            int month = LocalDate.now().monthValue
+            if (month >= 3 && month <= 5) themeName = 'spring'
+            else if (month >= 6 && month <= 8) themeName = 'summer'
+            else if (month >= 9 && month <= 11) themeName = 'fall'
+            else themeName = 'winter'
+        }
         if (THEMES.containsKey(themeName)) {
             theme = THEMES.get(themeName)
         } else {
@@ -91,12 +107,21 @@ class EmojiObserver implements TraceObserver {
         }
         // Read feature toggles
         showProgressBar = session.config.navigate('emoji.progressBar', true) as boolean
-        showGreeting = session.config.navigate('emoji.greeting', true) as boolean
         showSummary = session.config.navigate('emoji.summary', true) as boolean
         showConfetti = session.config.navigate('emoji.confetti', false) as boolean
 
+        // Greeting: true/false for seasonal, or a custom string
+        Object greetingConfig = session.config.navigate('emoji.greeting', true)
+        if (greetingConfig instanceof String) {
+            showGreeting = true
+            customGreeting = greetingConfig as String
+        } else {
+            showGreeting = greetingConfig as boolean
+        }
+
         if (showGreeting) {
-            System.err.println("\n" + getSeasonalGreeting() + "\n")
+            String greeting = customGreeting ?: getSeasonalGreeting()
+            System.err.println("\n" + greeting + "\n")
         }
     }
 
@@ -120,24 +145,22 @@ class EmojiObserver implements TraceObserver {
                 for (AtomicInteger v : cached.values()) totalCached += v.get()
                 for (AtomicInteger v : failed.values()) totalFailed += v.get()
 
-                System.err.println "\n${theme.get('summary')} Pipeline complete!"
-                System.err.println "${theme.get('completed')} ${totalCompleted} succeeded | ${theme.get('failed')} ${totalFailed} failed | ${theme.get('cached')} ${totalCached} cached"
-
                 if (showConfetti && totalFailed == 0) {
                     launchConfetti()
                 }
+
+                System.err.println "\n${theme.get('summary')} Pipeline complete!"
+                System.err.println "${theme.get('completed')} ${totalCompleted} succeeded | ${theme.get('failed')} ${totalFailed} failed | ${theme.get('cached')} ${totalCached} cached"
             }))
         }
     }
 
     private void launchConfetti() {
         try {
-            // Check if cli-confetti is available
             Process which = new ProcessBuilder('which', 'cli-confetti').start()
             if (which.waitFor() != 0) return
 
-            // Launch cli-confetti, inheriting the terminal
-            ProcessBuilder pb = new ProcessBuilder('cli-confetti', '-d', '3')
+            ProcessBuilder pb = new ProcessBuilder('cli-confetti', '-d', '1')
             pb.inheritIO()
             Process p = pb.start()
             p.waitFor()
@@ -203,33 +226,32 @@ class EmojiObserver implements TraceObserver {
         [12, 31, '🎆', 'New Year\'s Eve'],
     ] as List<List<Object>>
 
-    private String getSeasonalGreeting() {
-        LocalDate today = LocalDate.now()
+    String getSeasonalGreeting(LocalDate today = LocalDate.now()) {
         int month = today.monthValue
         int day = today.dayOfMonth
 
         // Special days
-        if (month == 1 && day == 1) return "🍀 New year, new DAGs to traverse! 🍀"
-        if (month == 2 && day == 14) return "💕 Roses are red, violets are blue, your pipeline exited 0! 💕"
-        if (month == 3 && day == 14) return "🥧 3.14159... Pipeline is irrational! 🥧"
-        if (month == 4 && day == 22) return "🌍 Optimizing CPU cycles for Earth Day! 🌍"
-        if (month == 4 && day == 25) return "🧬 Happy DNA Day! Time to sequence some tasks! 🧬"
+        if (month == 1 && day == 1) return "🍀 Happy New Year! 🍀"
+        if (month == 2 && day == 14) return "💕 Love is in the air...! 💕"
+        if (month == 3 && day == 14) return "🥧 Happy Pi Day! 🥧"
+        if (month == 4 && day == 22) return "🌍 Happy Earth Day! 🌍"
+        if (month == 4 && day == 25) return "🧬 Happy DNA Day! 🧬"
         if (month == 10 && day == 31) return "🎃 Something wicked this way computes! 🎃"
-        if (month == 12 && (day == 24 || day == 25)) return "🎅 Santa is delivering your results! 🎅"
-        if (month == 12 && day == 31) return "🎆 Last pipeline of the year! 🎆"
+        if (month == 12 && (day == 24 || day == 25)) return "🎅 'Twas the night before deployment... 🎅"
+        if (month == 12 && day == 31) return "🎆 Happy New Year! 🎆"
 
         // Seasonal greeting + countdown to next festive day
         String seasonal
-        if (month >= 3 && month <= 5) seasonal = "🌱 Workflows are sprouting! 🌱"
-        else if (month >= 6 && month <= 8) seasonal = "☀️ Peak compute season! ☀️"
-        else if (month >= 9 && month <= 11) seasonal = "🍂 Crunching leaves and data! 🍂"
-        else seasonal = "❄️ Freezing temps, blazing pipelines! ❄️"
+        if (month >= 3 && month <= 5) seasonal = "🌱 Happy spring! 🌱"
+        else if (month >= 6 && month <= 8) seasonal = "☀️ Happy summer! ☀️"
+        else if (month >= 9 && month <= 11) seasonal = "🍂 Happy fall! 🍂"
+        else seasonal = "❄️ Happy winter! ❄️"
 
         String countdown = getCountdown(today)
         return countdown != null ? "${seasonal}\n${countdown}" : seasonal
     }
 
-    private String getCountdown(LocalDate today) {
+    String getCountdown(LocalDate today) {
         int year = today.year
         long minDays = Long.MAX_VALUE
         String nextEmoji = null

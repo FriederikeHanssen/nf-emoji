@@ -20,7 +20,7 @@ To customize, add an `emoji` block to your config:
 
 ```groovy
 emoji {
-    theme       = 'ocean'    // default, space, ocean, lab, food, pirate
+    theme       = 'ocean'    // default, space, ocean, lab, food, pirate, animal
     progressBar = true       // show live progress bar
     greeting    = true       // show seasonal greeting
     summary     = true       // show completion summary
@@ -46,7 +46,7 @@ executor >  local (6)
 
 ### Themes
 
-Six built-in themes change all emojis throughout the plugin:
+Seven built-in themes change all emojis throughout the plugin:
 
 | Theme | Succeeded | Failed | Cached | Progress |
 |---------|-----------|--------|--------|----------|
@@ -56,6 +56,7 @@ Six built-in themes change all emojis throughout the plugin:
 | lab | 🔬 | ☣️ | 📋 | 🧪 |
 | food | 🍰 | 🔥 | 🥫 | 🍕 |
 | pirate | 💰 | 🦜 | 🗺️ | 🏴‍☠️ |
+| animal | 🦊 | 🦂 | 🐢 | 🐎 |
 
 ### Channel operators
 

@@ -43,6 +43,7 @@ class EmojiObserver implements TraceObserver {
         'lab'    : [filled: '🧪', empty: '⬜', completed: '🔬', cached: '📋', failed: '☣️', summary: '🧬', error: '⚠️'],
         'food'   : [filled: '🍕', empty: '⬜', completed: '🍰', cached: '🥫', failed: '🔥', summary: '🍽️', error: '🤮'],
         'pirate' : [filled: '🏴‍☠️', empty: '🏳️', completed: '💰', cached: '🗺️', failed: '🦜', summary: '⚓', error: '☠️'],
+        'animal' : [filled: '🐎', empty: '⬜', completed: '🦊', cached: '🐢', failed: '🦂', summary: '🦁', error: '🐛'],
     ] as Map<String, Map<String, String>>
 
     // Active theme

@@ -21,4 +21,4 @@ Thumbs.db
 .envrc
 
 # Example workflow (local dev only)
-workflow/
+workflow/*

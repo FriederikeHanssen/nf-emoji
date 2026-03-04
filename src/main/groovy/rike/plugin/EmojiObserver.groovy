@@ -157,12 +157,10 @@ class EmojiObserver implements TraceObserver {
 
     private void launchConfetti() {
         try {
-            // Check if cli-confetti is available
             Process which = new ProcessBuilder('which', 'cli-confetti').start()
             if (which.waitFor() != 0) return
 
-            // Launch cli-confetti, inheriting the terminal
-            ProcessBuilder pb = new ProcessBuilder('cli-confetti', '-d', '3')
+            ProcessBuilder pb = new ProcessBuilder('cli-confetti', '-d', '1')
             pb.inheritIO()
             Process p = pb.start()
             p.waitFor()

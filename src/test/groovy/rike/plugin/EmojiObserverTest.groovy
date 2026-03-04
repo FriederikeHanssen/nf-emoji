@@ -104,7 +104,7 @@ class EmojiObserverTest extends Specification {
 
     def 'should have all expected themes'() {
         expect:
-        EmojiObserver.THEMES.keySet() == ['default', 'space', 'ocean', 'lab', 'food', 'pirate', 'animal', 'nfcore'] as Set
+        EmojiObserver.THEMES.keySet() == ['default', 'space', 'ocean', 'lab', 'food', 'pirate', 'animal', 'nf-core'] as Set
     }
 
     def 'each theme should have all required keys'() {
@@ -130,7 +130,7 @@ class EmojiObserverTest extends Specification {
         observer.theme == EmojiObserver.THEMES.get(themeName)
 
         where:
-        themeName << ['default', 'space', 'ocean', 'lab', 'food', 'pirate', 'animal', 'nfcore']
+        themeName << ['default', 'space', 'ocean', 'lab', 'food', 'pirate', 'animal', 'nf-core']
     }
 
     def 'should pick a valid theme when random is selected'() {

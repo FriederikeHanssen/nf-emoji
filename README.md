@@ -20,7 +20,7 @@ To customize, add an `emoji` block to your config:
 
 ```groovy
 emoji {
-    theme       = 'ocean'              // default, space, ocean, lab, food, pirate, animal, nfcore, random
+    theme       = 'ocean'              // default, space, ocean, lab, food, pirate, animal, nf-core, random
     progressBar = true                 // show live progress bar
     greeting    = true                 // true/false, or a custom string
     summary     = true                 // show completion summary
@@ -58,7 +58,7 @@ Eight built-in themes change all emojis throughout the plugin (or use `random` f
 | food | 🍰 | 🔥 | 🥫 | 🍕 |
 | pirate | 💰 | 🦜 | 🗺️ | 🏴‍☠️ |
 | animal | 🦊 | 🦂 | 🐢 | 🐎 |
-| nfcore | 🍏 | 🍎 | 🌿 | 🍏 |
+| nf-core | 🍏 | 🍎 | 🌿 | 🍏 |
 
 ### Channel operators
 

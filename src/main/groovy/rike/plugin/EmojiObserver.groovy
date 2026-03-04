@@ -24,6 +24,7 @@ import nextflow.processor.TaskHandler
 import nextflow.trace.TraceRecord
 
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.atomic.AtomicInteger
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -44,7 +45,7 @@ class EmojiObserver implements TraceObserver {
         'food'   : [filled: '🍕', empty: '⬜', completed: '🍰', cached: '🥫', failed: '🔥', summary: '🍽️', error: '🤮'],
         'pirate' : [filled: '🏴‍☠️', empty: '🏳️', completed: '💰', cached: '🗺️', failed: '🦜', summary: '⚓', error: '☠️'],
         'animal' : [filled: '🐎', empty: '⬜', completed: '🦊', cached: '🐢', failed: '🦂', summary: '🦁', error: '🐛'],
-        'nfcore' : [filled: '🍏', empty: '⬜', completed: '🍏', cached: '🌿', failed: '🍎', summary: '🌳', error: '🍎'],
+        'nf-core': [filled: '🍏', empty: '⬜', completed: '🍏', cached: '🌿', failed: '🍎', summary: '🌳', error: '🍎'],
     ] as Map<String, Map<String, String>>
 
     // Active theme
@@ -91,7 +92,7 @@ class EmojiObserver implements TraceObserver {
         String themeName = session.config.navigate('emoji.theme', 'default') as String
         if (themeName == 'random') {
             List<String> themeNames = THEMES.keySet().toList()
-            themeName = themeNames.get(new Random().nextInt(themeNames.size()))
+            themeName = themeNames.get(ThreadLocalRandom.current().nextInt(themeNames.size()))
         }
         if (THEMES.containsKey(themeName)) {
             theme = THEMES.get(themeName)

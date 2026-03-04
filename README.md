@@ -20,7 +20,7 @@ To customize, add an `emoji` block to your config:
 
 ```groovy
 emoji {
-    theme       = 'ocean'              // default, space, ocean, lab, food, pirate, animal, nf-core, random
+    theme       = 'ocean'              // default, space, ocean, lab, food, pirate, animal, nf-core, seasonal
     progressBar = true                 // show live progress bar
     greeting    = true                 // true/false, or a custom string
     summary     = true                 // show completion summary
@@ -47,7 +47,7 @@ executor >  local (6)
 
 ### Themes
 
-Eight built-in themes change all emojis throughout the plugin (or use `random` for a surprise):
+Twelve built-in themes (or use `seasonal` to auto-select by time of year):
 
 | Theme | Succeeded | Failed | Cached | Progress |
 |---------|-----------|--------|--------|----------|
@@ -59,6 +59,10 @@ Eight built-in themes change all emojis throughout the plugin (or use `random` f
 | pirate | 💰 | 🦜 | 🗺️ | 🏴‍☠️ |
 | animal | 🦊 | 🦂 | 🐢 | 🐎 |
 | nf-core | 🍏 | 🍎 | 🌿 | 🍏 |
+| spring | 🌸 | 🥀 | 🌱 | 🌷 |
+| summer | 🏖️ | 🌪️ | 🧊 | ☀️ |
+| fall | 🎃 | 💨 | 🍄 | 🍂 |
+| winter | ⛄ | 🥶 | 🧣 | ❄️ |
 
 ### Channel operators
 
@@ -97,11 +101,15 @@ emoji {
 
 The plugin detects the date and prints themed greetings:
 
-- Mar 14: `🥧 3.14159... Pipeline is irrational! 🥧`
-- Apr 25: `🧬 Happy DNA Day! Time to sequence some tasks! 🧬`
+- Jan 1: `🍀 Happy New Year! 🍀`
+- Feb 14: `💕 Love is in the air... and so are your results! 💕`
+- Mar 14: `🥧 Happy Pi Day! 🥧`
+- Apr 22: `🌍 Happy Earth Day! 🌍`
+- Apr 25: `🧬 Happy DNA Day! 🧬`
 - Oct 31: `🎃 Something wicked this way computes! 🎃`
-- Dec 24-25: `🎅 Santa is delivering your results! 🎅`
-- Plus seasonal defaults for spring, summer, fall, and winter
+- Dec 24-25: `🎅 'Twas the night before deployment... 🎅`
+- Dec 31: `🎆 Happy New Year! 🎆`
+- Plus seasonal defaults and a countdown to the next festive day
 
 ## License
 

@@ -24,7 +24,6 @@ import nextflow.processor.TaskHandler
 import nextflow.trace.TraceRecord
 
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ThreadLocalRandom
 import java.util.concurrent.atomic.AtomicInteger
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -46,6 +45,10 @@ class EmojiObserver implements TraceObserver {
         'pirate' : [filled: '🏴‍☠️', empty: '🏳️', completed: '💰', cached: '🗺️', failed: '🦜', summary: '⚓', error: '☠️'],
         'animal' : [filled: '🐎', empty: '⬜', completed: '🦊', cached: '🐢', failed: '🦂', summary: '🦁', error: '🐛'],
         'nf-core': [filled: '🍏', empty: '⬜', completed: '🍏', cached: '🌿', failed: '🍎', summary: '🌳', error: '🍎'],
+        'spring' : [filled: '🌷', empty: '⬜', completed: '🌸', cached: '🌱', failed: '🥀', summary: '🌻', error: '🌧️'],
+        'summer' : [filled: '☀️', empty: '⬜', completed: '🏖️', cached: '🧊', failed: '🌪️', summary: '🌴', error: '⛈️'],
+        'fall'   : [filled: '🍂', empty: '⬜', completed: '🎃', cached: '🍄', failed: '💨', summary: '🍁', error: '🌫️'],
+        'winter' : [filled: '❄️', empty: '⬜', completed: '⛄', cached: '🧣', failed: '🥶', summary: '🎄', error: '🌨️'],
     ] as Map<String, Map<String, String>>
 
     // Active theme
@@ -90,9 +93,12 @@ class EmojiObserver implements TraceObserver {
     void onFlowCreate(Session session) {
         // Read theme from nextflow.config: emoji { theme = 'space' }
         String themeName = session.config.navigate('emoji.theme', 'default') as String
-        if (themeName == 'random') {
-            List<String> themeNames = THEMES.keySet().toList()
-            themeName = themeNames.get(ThreadLocalRandom.current().nextInt(themeNames.size()))
+        if (themeName == 'seasonal') {
+            int month = LocalDate.now().monthValue
+            if (month >= 3 && month <= 5) themeName = 'spring'
+            else if (month >= 6 && month <= 8) themeName = 'summer'
+            else if (month >= 9 && month <= 11) themeName = 'fall'
+            else themeName = 'winter'
         }
         if (THEMES.containsKey(themeName)) {
             theme = THEMES.get(themeName)
@@ -227,21 +233,21 @@ class EmojiObserver implements TraceObserver {
         int day = today.dayOfMonth
 
         // Special days
-        if (month == 1 && day == 1) return "🍀 New year, new DAGs to traverse! 🍀"
-        if (month == 2 && day == 14) return "💕 Roses are red, violets are blue, your pipeline exited 0! 💕"
-        if (month == 3 && day == 14) return "🥧 3.14159... Pipeline is irrational! 🥧"
-        if (month == 4 && day == 22) return "🌍 Optimizing CPU cycles for Earth Day! 🌍"
-        if (month == 4 && day == 25) return "🧬 Happy DNA Day! Time to sequence some tasks! 🧬"
+        if (month == 1 && day == 1) return "🍀 Happy New Year! 🍀"
+        if (month == 2 && day == 14) return "💕 Love is in the air... and so are your results! 💕"
+        if (month == 3 && day == 14) return "🥧 Happy Pi Day! 🥧"
+        if (month == 4 && day == 22) return "🌍 Happy Earth Day! 🌍"
+        if (month == 4 && day == 25) return "🧬 Happy DNA Day! 🧬"
         if (month == 10 && day == 31) return "🎃 Something wicked this way computes! 🎃"
-        if (month == 12 && (day == 24 || day == 25)) return "🎅 Santa is delivering your results! 🎅"
-        if (month == 12 && day == 31) return "🎆 Last pipeline of the year! 🎆"
+        if (month == 12 && (day == 24 || day == 25)) return "🎅 'Twas the night before deployment... 🎅"
+        if (month == 12 && day == 31) return "🎆 Happy New Year! 🎆"
 
         // Seasonal greeting + countdown to next festive day
         String seasonal
-        if (month >= 3 && month <= 5) seasonal = "🌱 Workflows are sprouting! 🌱"
-        else if (month >= 6 && month <= 8) seasonal = "☀️ Peak compute season! ☀️"
-        else if (month >= 9 && month <= 11) seasonal = "🍂 Crunching leaves and data! 🍂"
-        else seasonal = "❄️ Freezing temps, blazing pipelines! ❄️"
+        if (month >= 3 && month <= 5) seasonal = "🌱 Happy spring! 🌱"
+        else if (month >= 6 && month <= 8) seasonal = "☀️ Happy summer! ☀️"
+        else if (month >= 9 && month <= 11) seasonal = "🍂 Happy fall! 🍂"
+        else seasonal = "❄️ Happy winter! ❄️"
 
         String countdown = getCountdown(today)
         return countdown != null ? "${seasonal}\n${countdown}" : seasonal

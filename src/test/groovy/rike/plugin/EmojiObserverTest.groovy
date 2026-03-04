@@ -104,7 +104,7 @@ class EmojiObserverTest extends Specification {
 
     def 'should have all expected themes'() {
         expect:
-        EmojiObserver.THEMES.keySet() == ['default', 'space', 'ocean', 'lab', 'food', 'pirate', 'animal', 'nf-core'] as Set
+        EmojiObserver.THEMES.keySet() == ['default', 'space', 'ocean', 'lab', 'food', 'pirate', 'animal', 'nf-core', 'spring', 'summer', 'fall', 'winter'] as Set
     }
 
     def 'each theme should have all required keys'() {
@@ -130,20 +130,25 @@ class EmojiObserverTest extends Specification {
         observer.theme == EmojiObserver.THEMES.get(themeName)
 
         where:
-        themeName << ['default', 'space', 'ocean', 'lab', 'food', 'pirate', 'animal', 'nf-core']
+        themeName << ['default', 'space', 'ocean', 'lab', 'food', 'pirate', 'animal', 'nf-core', 'spring', 'summer', 'fall', 'winter']
     }
 
-    def 'should pick a valid theme when random is selected'() {
+    def 'should resolve seasonal theme to current season'() {
         given:
         def observer = new EmojiObserver()
         def session = Mock(Session)
-        session.config >> [emoji: [theme: 'random', greeting: false]]
+        session.config >> [emoji: [theme: 'seasonal', greeting: false]]
 
         when:
         observer.onFlowCreate(session)
 
         then:
-        EmojiObserver.THEMES.values().contains(observer.theme)
+        observer.theme in [
+            EmojiObserver.THEMES.get('spring'),
+            EmojiObserver.THEMES.get('summer'),
+            EmojiObserver.THEMES.get('fall'),
+            EmojiObserver.THEMES.get('winter'),
+        ]
     }
 
     // --- Custom greeting ---

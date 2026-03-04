@@ -203,8 +203,7 @@ class EmojiObserver implements TraceObserver {
         [12, 31, '🎆', 'New Year\'s Eve'],
     ] as List<List<Object>>
 
-    private String getSeasonalGreeting() {
-        LocalDate today = LocalDate.now()
+    String getSeasonalGreeting(LocalDate today = LocalDate.now()) {
         int month = today.monthValue
         int day = today.dayOfMonth
 
@@ -229,7 +228,7 @@ class EmojiObserver implements TraceObserver {
         return countdown != null ? "${seasonal}\n${countdown}" : seasonal
     }
 
-    private String getCountdown(LocalDate today) {
+    String getCountdown(LocalDate today) {
         int year = today.year
         long minDays = Long.MAX_VALUE
         String nextEmoji = null

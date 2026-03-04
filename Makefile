@@ -19,3 +19,8 @@ install:
 # Publish the plugin
 release:
 	./gradlew releasePlugin
+
+# Build, install, and run the example workflow
+run:
+	./gradlew install
+	cd workflow && nextflow run .

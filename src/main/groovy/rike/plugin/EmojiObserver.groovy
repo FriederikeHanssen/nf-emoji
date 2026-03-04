@@ -232,7 +232,7 @@ class EmojiObserver implements TraceObserver {
 
         // Special days
         if (month == 1 && day == 1) return "🍀 Happy New Year! 🍀"
-        if (month == 2 && day == 14) return "💕 Love is in the air... and so are your results! 💕"
+        if (month == 2 && day == 14) return "💕 Love is in the air...! 💕"
         if (month == 3 && day == 14) return "🥧 Happy Pi Day! 🥧"
         if (month == 4 && day == 22) return "🌍 Happy Earth Day! 🌍"
         if (month == 4 && day == 25) return "🧬 Happy DNA Day! 🧬"

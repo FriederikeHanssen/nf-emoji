@@ -102,7 +102,7 @@ emoji {
 The plugin detects the date and prints themed greetings:
 
 - Jan 1: `🍀 Happy New Year! 🍀`
-- Feb 14: `💕 Love is in the air... and so are your results! 💕`
+- Feb 14: `💕 Love is in the air...! 💕`
 - Mar 14: `🥧 Happy Pi Day! 🥧`
 - Apr 22: `🌍 Happy Earth Day! 🌍`
 - Apr 25: `🧬 Happy DNA Day! 🧬`

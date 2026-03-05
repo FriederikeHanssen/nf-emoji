@@ -10,7 +10,7 @@ Add the plugin to your `nextflow.config`:
 
 ```groovy
 plugins {
-    id 'nf-emoji@0.1.0'
+    id 'nf-emoji@0.2.0'
 }
 ```
 
@@ -110,6 +110,18 @@ The plugin detects the date and prints themed greetings:
 - Dec 24-25: `🎅 'Twas the night before deployment... 🎅`
 - Dec 31: `🎆 Happy New Year! 🎆`
 - Plus seasonal defaults and a countdown to the next festive day
+
+### Confetti
+
+Enable confetti to celebrate successful pipeline runs. This requires [`cli-confetti`](https://github.com/IonicaBizau/cli-confetti) to be installed.
+
+Then enable it in your config:
+
+```groovy
+emoji {
+    confetti = true
+}
+```
 
 ## License
 
